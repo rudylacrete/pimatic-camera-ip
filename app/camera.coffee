@@ -10,8 +10,9 @@ $(document).on 'templateinit', (event) ->
       super(elements)
       # Do something after the html-element was added
 
-    onShowPress: ->
-      console.log '............... ok'
+    takePicture: ->
+      @device.rest.takePicture().fail(ajaxAlertFail)
+
       
   # register the item-class
   pimatic.templateClasses['cameraip'] = CameraIp
