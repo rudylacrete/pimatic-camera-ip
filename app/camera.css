@@ -1,0 +1,8 @@
+.camera-stream {
+	display: block;
+	width: 200px;
+	height: 150px;
+}
+.invisible {
+	display: none;
+}

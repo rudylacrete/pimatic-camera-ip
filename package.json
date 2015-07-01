@@ -1,0 +1,26 @@
+{ "name": "pimatic-camera-ip",
+  "description": "The plugin description",
+  "author": "rudylacrete <rudylacrete@gmail.com> (http://rudylacrete.com)",
+  "main": "camera-ip",
+  "files": [
+    "camera-ip.coffee",
+    "README.md",
+    "camera-ip-config-schema.coffee"
+  ],
+  "version": "0.0.1",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rudylacrete/pimatic-camera-ip.git"
+  },
+  "configSchema": "camera-ip-config-schema.coffee",
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "pimatic": "0.8.*"
+  },
+  "engines": {
+    "node": ">0.8.x",
+    "npm": ">1.1.x"
+  }
+}
