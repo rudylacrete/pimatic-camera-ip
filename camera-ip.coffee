@@ -1,13 +1,4 @@
-# #Plugin template
 
-# This is an plugin template and mini tutorial for creating pimatic plugins. It will explain the
-# basics of how the plugin system works and how a plugin should look like.
-
-# ##The plugin code
-
-# Your plugin must export a single function, that takes one argument and returns a instance of
-# your plugin class. The parameter is an envirement object containing all pimatic related functions
-# and classes. See the [startup.coffee](http://sweetpi.de/pimatic/docs/startup.html) for details.
 module.exports = (env) ->
 
   # ###require modules included in pimatic
@@ -20,10 +11,9 @@ module.exports = (env) ->
   # Require the [cassert library](https://github.com/rhoot/cassert).
   assert = env.require 'cassert'
 
-  # Include you own depencies with nodes global require function:
-  #
-  #     someThing = require 'someThing'
-  #
+  request = require 'request'
+  fs = require 'fs'
+  path = require 'path'
 
   # ###MyPlugin class
   # Create a class that extends the Plugin class and implements the following functions:
@@ -61,19 +51,49 @@ module.exports = (env) ->
   class CameraIp extends env.devices.Device
 
     attributes:
-      url:
-        description: 'video url'
-        type: "string"
+      streamUrl:
+        description: 'mjpeg stream url'
+        type: 'string'
+      pictureUrl:
+        description: 'picture url'
+        type: 'string'
+
+    actions:
+      takePicture:
+        description: 'take a picture'
 
     constructor: (@config) ->
       @name = @config.name
       @id = @config.id
-      @url = config.url
-      console.log '///////////////', @url
       super()
 
-    getUrl: ->
-      return Promise.resolve(@url)
+    # we expose this as an attribute but we can also retrieve the config
+    # object client side
+    getStreamUrl: ->
+      return Promise.resolve(@config.url.stream)
+
+    getPictureUrl: ->
+      return Promise.resolve(@config.url.picture)
+
+    test: ->
+      console.log 'You can trigger this action with a GET request on'
+      console.log 'http://localhost/api/device/{id}/test/'
+      console.log '++++++++++++++++ test OK'
+
+    takePicture: ->
+      f = (+new Date) + '.jpg'
+      p = path.resolve __dirname, @config.outputDir, f
+      opts = {}
+      if @config.auth.enable == true
+        opts =
+          auth:
+            user: @config.auth.user
+            pass: @config.auth.pass
+      request(@config.url.picture, opts).pipe(fs.createWriteStream(p))
+      .on 'finish', ->
+        env.logger.info "Picture saved successfuly into #{p}"
+      .on 'error', (err) ->
+        env.logger.error "An error occured", err
 
     template: "cameraip"
 

@@ -4,7 +4,7 @@ $(document).on 'templateinit', (event) ->
   class CameraIp extends pimatic.DeviceItem
     constructor: (data, @device) ->
       super(data, @device)
-      @url = @getAttribute('url').value()
+      @streamUrl = @getAttribute('streamUrl').value()
       # Do something, after create: console.log(this)
     afterRender: (elements) -> 
       super(elements)
